@@ -5,7 +5,6 @@ use colored::Colorize;
 use crate::models::{Command, HelpInfo};
 
 pub struct ExitCommand;
-
 impl Command for ExitCommand {
     fn execute(&self, args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         Ok(())
@@ -13,7 +12,7 @@ impl Command for ExitCommand {
 
     fn info(&self) -> crate::models::HelpInfo {
         HelpInfo {
-            name: "exit",
+            label: "exit",
             aliases: &["q", "quit"],
             description: "Temp",
             usage: "Usage",
@@ -22,7 +21,6 @@ impl Command for ExitCommand {
 }
 
 pub struct CleanCommand;
-
 impl Command for CleanCommand {
     fn execute(&self, args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         let output_dir = "./data";
@@ -50,7 +48,7 @@ impl Command for CleanCommand {
 
     fn info(&self) -> crate::models::HelpInfo {
         HelpInfo {
-            name: "clean",
+            label: "clean",
             aliases: &["c", "cl"],
             description: "Temp",
             usage: "Usage",
@@ -60,7 +58,6 @@ impl Command for CleanCommand {
 
 use super::get_all_commands;
 pub struct HelpCommand;
-
 impl Command for HelpCommand {
     fn execute(&self, args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         println!("\n{}\n", "Rust-ETL CLI".blue().bold());
@@ -69,18 +66,18 @@ impl Command for HelpCommand {
 
         let cmd_specifier = args.get(1);
         if let Some(specifier) = cmd_specifier {
-            println!("Help Info: {}", specifier);
+            println!("Help Info: {specifier}");
             for cmd in commands {
                 let info = cmd.info();
-                if info.name != *specifier {
+                if info.label != *specifier {
                     continue;
                 }
 
                 println!(
                     "\n{:<12}\n\n{:<20}\n{}\n{}\n",
-                    info.name.green().bold(),      // "generate"
-                    format!("{:?}", info.aliases), // "['g', 'gen']"
-                    info.description,              // "Generates dummy data..."
+                    info.label.green().bold(),     // Command Label
+                    format!("{:?}", info.aliases), // Aliases
+                    info.description,
                     info.usage
                 );
             }
@@ -90,9 +87,9 @@ impl Command for HelpCommand {
 
                 println!(
                     "  {:<12} {:<20} {}",
-                    info.name.green().bold(),      // "generate"
+                    info.label.green().bold(),     // "generate"
                     format!("{:?}", info.aliases), // "['g', 'gen']"
-                    info.description               // "Generates dummy data..."
+                    info.description
                 );
             }
             println!("\nType 'help <command>' for specific details.\n");
@@ -102,7 +99,7 @@ impl Command for HelpCommand {
 
     fn info(&self) -> crate::models::HelpInfo {
         HelpInfo {
-            name: "help",
+            label: "help",
             aliases: &["h", "--help", "?"],
             description: "Temp",
             usage: "Usage",

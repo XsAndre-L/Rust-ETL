@@ -14,11 +14,10 @@ pub mod gen_ndjson;
 use crate::models::{Command, HelpInfo, Record};
 
 pub struct GenerateCommand;
-
 impl Command for GenerateCommand {
     fn execute(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
-        let format = args.get(1).copied().unwrap_or("csv");
-        let record_count = 1_000_000;
+        let format = args.get(0).copied().unwrap_or("csv");
+        let record_count = 100_000;
         let output_dir = "./data";
         let csv_path = format!("{}/input.csv", output_dir);
         let ndjson_path = format!("{}/input.ndjson", output_dir);
@@ -62,7 +61,7 @@ impl Command for GenerateCommand {
 
     fn info(&self) -> HelpInfo {
         HelpInfo {
-            name: "generate",
+            label: "generate",
             aliases: &["g", "gen"],
             description: "Generates dummy data (CSV/NDJSON) for the project.",
             usage: "generate [format]",
@@ -80,7 +79,7 @@ fn generate_dummy_records(count: usize) -> Vec<Record> {
         Some(" padded_tag "),
         Some("Mixed_Tag"),
         Some("UPPERCASE_TAG"),
-        None, // This replaces 'null'
+        None, // add some 'null' tags
     ];
     let mut records = Vec::with_capacity(count);
     let mut current_time = Utc::now();

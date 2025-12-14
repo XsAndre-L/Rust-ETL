@@ -1,6 +1,6 @@
 use rusqlite::{Connection, Result, params};
 
-// 2. Change the return type to Result<Connection>
+// Change the return type to Result<Connection>
 pub fn setup_db(path: &str) -> Result<Connection> {
     let connection = Connection::open(path)?;
 

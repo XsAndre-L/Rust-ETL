@@ -24,7 +24,7 @@ impl Record {
 }
 
 pub struct HelpInfo {
-    pub name: &'static str,
+    pub label: &'static str,
     pub aliases: &'static [&'static str],
     pub description: &'static str,
     pub usage: &'static str,
