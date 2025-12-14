@@ -3,7 +3,7 @@ use std::{
     io::{self, Write},
 };
 
-use crate::commands::{execute_command, generate, transform};
+use crate::commands::execute_command;
 
 mod commands;
 mod db;
@@ -15,35 +15,24 @@ fn main() {
     let mut cmd = String::new();
     let args: Vec<String> = env::args().collect();
 
-    // io::stdin().read_line(&mut cmd);
-
-    // let parts = env::args();
-
     if args.len() > 1 {
-        println!("Immediate: {}", args.len());
+        // Immediate Mode: Executes and exits
         cmd = args[1..].join(" ");
         execute_command(&mut cmd);
     } else {
+        // Interactive Mode: Executes untill "exit" is called
         loop {
             print!("> ");
             io::stdout().flush().unwrap();
 
             cmd.clear();
 
-            // println!("Interactive: {}", args.len());
-
             match io::stdin().read_line(&mut cmd) {
                 Ok(_) => {
-                    if !cmd.is_empty() {
-                        let repeat = execute_command(&mut cmd);
-                        if !repeat {
-                            break;
-                        }
+                    let exit = execute_command(&mut cmd);
+                    if exit {
+                        break;
                     }
-
-                    // if !execute_command(&mut cmd) {
-                    //     break;
-                    // }
                 }
                 Err(error) => println!("Error: {}", error),
             }

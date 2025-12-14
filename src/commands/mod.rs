@@ -1,7 +1,29 @@
 use std::{env, io};
 
+use colored::Colorize;
+
+use crate::commands::{
+    generate::GenerateCommand,
+    transform::TransformCommand,
+    util::{CleanCommand, ExitCommand},
+};
+
+use crate::models::Command;
+
+pub mod clean;
 pub mod generate;
 pub mod transform;
+pub mod util;
+
+pub fn get_all_commands() -> Vec<Box<dyn Command>> {
+    vec![
+        Box::new(generate::GenerateCommand),
+        Box::new(transform::TransformCommand),
+        Box::new(util::CleanCommand),
+        Box::new(util::HelpCommand),
+        Box::new(util::ExitCommand),
+    ]
+}
 
 pub struct ParsedCommand {
     pub cmd: String,
@@ -10,11 +32,18 @@ pub struct ParsedCommand {
 
 impl ParsedCommand {
     pub fn new(input: &str) -> Option<Self> {
-        let mut parts = input.trim().split_whitespace();
+        let parts: Vec<&str> = input.trim().split_whitespace().collect();
 
-        let cmd = parts.next().map(|s| s.to_string())?;
+        if parts.is_empty() {
+            return None;
+        }
+        // let mut parts = input.trim().split_whitespace();
 
-        let args = parts.map(|s| s.to_string()).collect();
+        // let cmd = parts.next().map(|s| s.to_string())?;
+        let cmd = parts[0].to_string();
+        let args = parts[1..].iter().map(|s| s.to_string()).collect();
+
+        // let args = parts.map(|s| s.to_string()).collect();
         Some(Self { cmd, args })
     }
 
@@ -33,50 +62,101 @@ pub fn execute_command(cmd: &mut String) -> bool {
     let args: Vec<&str> = cmd.trim().split_whitespace().collect();
 
     if let Some(command) = args.first() {
-        match *command {
-            "exit" | "quit" => return false,
+        let commands = get_all_commands();
 
-            "g" | "gen" | "generate" => {
-                // Example of handling an optional arg: "gen csv" vs "gen ndjson"
-                // If they just typed "gen", default to csv
-                let format = args.get(1).unwrap_or(&"csv");
-                println!("Generating {}...", format);
-
-                match generate::generate() {
-                    Ok(_) => println!("Generation completed successfully."),
-                    Err(e) => println!("Failed to generate data: {}", e),
+        for cmd in commands {
+            let info = cmd.info();
+            if info.name == *command || info.aliases.contains(command) {
+                if info.name == "exit" {
+                    return true;
                 }
-            }
 
-            "t" | "transform" => {
-                // Check for the required argument (the filename)
-                if let Some(filename) = args.get(1) {
-                    println!("Transforming file: {}", filename);
-
-                    // Pass the filename to your transform module
-                    match transform::execute(filename) {
-                        Ok(_) => println!("Success!"),
-                        Err(e) => eprintln!("Error: {}", e),
-                    }
-                } else {
-                    println!("Usage: transform <filename>");
+                if let Err(e) = cmd.execute(&args) {
+                    println!("Error executing command: {}", e);
                 }
-            }
-
-            "reset" => {
-                // this will delete ./data folder
-                // delete ./target folder
-                // delete the storage.db
-            }
-
-            "h" | "help" => {}
-
-            _ => {
-                println!("Unknown command: '{}'", command);
+                return false;
             }
         }
-        return true;
+
+        println!("Unknown command: '{}'", command);
+
+        // match *command {
+        //     "exit" | "quit" => return true,
+
+        //     "g" | "gen" | "generate" => match GenerateCommand.execute(&args[1..]) {
+        //         Ok(_) => println!("Generation completed successfully."),
+        //         Err(e) => println!("Failed to generate data: {}", e),
+        //     },
+
+        //     "t" | "transform" => {
+        //         match TransformCommand.execute(&args[1..]) {
+        //             Ok(_) => println!("Success!"),
+        //             Err(e) => eprintln!("Error: {}", e),
+        //         }
+
+        //         // // Check for the required argument (the filename)
+        //         // if let Some(filename) = args.get(1) {
+        //         //     println!("Transforming file: {}", filename);
+
+        //         //     // Pass the filename to your transform module
+        //         //     match TransformCommand.execute(filename) {
+        //         //         Ok(_) => println!("Success!"),
+        //         //         Err(e) => eprintln!("Error: {}", e),
+        //         //     }
+        //         // } else {
+        //         //     println!("Usage: transform <filename>");
+        //         // }
+        //     }
+
+        //     "reset" => {
+        //         // this will delete ./data folder
+        //         // delete ./target folder
+        //         // delete the storage.db
+        //     }
+
+        //     "h" | "help" => {
+        //         println!("\n{}\n", "Rust-ETL CLI".blue().bold());
+
+        //         let commands = get_all_commands();
+
+        //         let cmd_specifier = args.get(1);
+        //         if let Some(specifier) = cmd_specifier {
+        //             println!("Help Info: {}", specifier);
+        //             for cmd in commands {
+        //                 let info = cmd.info();
+        //                 if info.name != *specifier {
+        //                     continue;
+        //                 }
+
+        //                 println!(
+        //                     "\n{:<12}\n\n{:<20}\n{}\n{}\n",
+        //                     info.name.green().bold(),      // "generate"
+        //                     format!("{:?}", info.aliases), // "['g', 'gen']"
+        //                     info.description,              // "Generates dummy data..."
+        //                     info.usage
+        //                 );
+        //             }
+        //         } else {
+        //             for cmd in commands {
+        //                 let info = cmd.info();
+
+        //                 println!(
+        //                     "  {:<12} {:<20} {}",
+        //                     info.name.green().bold(),      // "generate"
+        //                     format!("{:?}", info.aliases), // "['g', 'gen']"
+        //                     info.description               // "Generates dummy data..."
+        //                 );
+        //             }
+        //             println!("\nType 'help <command>' for specific details.\n");
+        //         }
+        //     }
+
+        //     _ => {
+        //         println!("Unknown command: '{}'", command);
+        //     }
+        // }
+        return false;
     }
 
-    true
+    false
 }
