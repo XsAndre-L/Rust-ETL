@@ -44,7 +44,6 @@ impl Command for TransformCommand {
 
             match result {
                 Ok(record) => {
-                    // Transform Record
                     if process_record(&mut stmt, record).is_ok() {
                         stats.success += 1; // success
                     } else {
@@ -52,12 +51,11 @@ impl Command for TransformCommand {
                     }
                 }
                 Err(_) => {
-                    // Parse error (malformed CSV/JSON)
                     stats.fail += 1;
                 }
             }
 
-            // Optional: Print progress every 10k rows
+            // Print progress every 10k rows
             if stats.total % 10_000 == 0 {
                 print!("\rProcessed: {}", stats.total);
                 use std::io::Write;

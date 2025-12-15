@@ -7,7 +7,7 @@ use std::{
 use crate::core::types::Record;
 
 pub fn write_ndjson(records: &[Record], path: &str) -> Result<(), Box<dyn Error>> {
-    println!("Writing NDJSON to {}...", path);
+    println!("Writing NDJSON to {}...\n", path);
     let file = File::create(path)?;
     let mut writer = BufWriter::new(file);
 

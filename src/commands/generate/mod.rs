@@ -21,7 +21,6 @@ impl Command for GenerateCommand {
         dotenv().ok();
 
         let format = args.get(0).copied().unwrap_or("csv");
-        // let record_count = 100_000;
         let record_count = env::var("RECORD_COUNT")
             .unwrap_or_else(|_| "100000".to_string())
             .parse()
@@ -92,7 +91,7 @@ fn generate_dummy_records(count: usize) -> Vec<Record> {
     let mut records = Vec::with_capacity(count);
     let mut current_time = Utc::now();
 
-    println!("Generating {} records in memory...", count);
+    println!("\nGenerating {} records in memory...", count);
 
     for i in 0..count {
         if i > 0 && i % 100_000 == 0 {
@@ -111,6 +110,8 @@ fn generate_dummy_records(count: usize) -> Vec<Record> {
             tag: tags[generator.random_range(0..tags.len())].map(|s| s.to_string()),
         });
     }
+
+    println!("  Processed {} records.", count);
 
     records
 }

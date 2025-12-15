@@ -1,6 +1,6 @@
 use std::time::Instant;
 
-#[derive(Default)] // Optional: allows ProcessingStats::default()
+#[derive(Default)]
 pub struct ProcessingStats {
     pub total: u64,
     pub success: u64,
