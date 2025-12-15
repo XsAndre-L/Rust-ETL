@@ -25,8 +25,6 @@ impl Command for TransformCommand {
 
         let record_iterator = get_record_iterator(&input_path)?;
 
-        println!("TEST");
-
         // Start a Transaction (Batching)
         // Writing 100k rows individually is slow. A transaction groups them.
         let tx = connection.transaction()?;
@@ -71,7 +69,7 @@ impl Command for TransformCommand {
         drop(stmt);
         tx.commit()?;
 
-        println!("\rDone!              ");
+        println!("\rDone!\n");
 
         // Report Metrics
         print_stats(stats, start_time);

@@ -101,7 +101,7 @@ fn generate_dummy_records(count: usize) -> Vec<Record> {
 
         current_time = current_time - Duration::seconds(generator.random_range(1..60));
 
-        let raw_value: f64 = generator.random_range(10.0..500.0);
+        let raw_value: f64 = generator.random_range(-50.0..500.0);
         let value = (raw_value * 100.0).round() / 100.0;
 
         records.push(Record {

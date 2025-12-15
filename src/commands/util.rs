@@ -26,7 +26,7 @@ impl Command for CleanCommand {
         let output_dir = "./data";
         let db_file = "storage.db";
 
-        println!("Cleaning project data...");
+        println!("\nCleaning project data...");
 
         // Delete ./data folder
         if Path::new(output_dir).exists() {
@@ -42,7 +42,7 @@ impl Command for CleanCommand {
             println!("  ✓ Deleted '{}'", db_file);
         }
 
-        println!("Clean complete.");
+        println!("Clean complete.\n");
         Ok(())
     }
 

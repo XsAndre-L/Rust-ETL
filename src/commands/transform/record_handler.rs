@@ -1,4 +1,4 @@
-use crate::core::{db, types::Record};
+use crate::core::types::Record;
 use chrono::DateTime;
 use rusqlite::Statement;
 use std::{
@@ -58,9 +58,10 @@ pub fn get_record_iterator(
 
 // --- Transformation Logic ---
 pub fn process_record(stmt: &mut Statement, record: Record) -> Result<(), ()> {
-    // let tag_raw = record.tag.as_deref().unwrap_or("");
+    // Normalize
     let tag_normalized = record.tag.unwrap_or_default().trim().to_lowercase();
 
+    // Filter
     if tag_normalized.is_empty() {
         return Err(());
     }
@@ -71,8 +72,10 @@ pub fn process_record(stmt: &mut Statement, record: Record) -> Result<(), ()> {
         Err(_) => return Err(()),
     };
 
+    // Derive an additional field
     let positive = if record.value > 0.0 { 1 } else { 0 };
 
+    // Execute the SQL
     match stmt.execute(rusqlite::params![
         record.id,
         parsed_timestamp,
@@ -83,16 +86,4 @@ pub fn process_record(stmt: &mut Statement, record: Record) -> Result<(), ()> {
         Ok(_) => Ok(()),
         Err(_) => Err(()),
     }
-
-    // match db::insert_record(
-    //     tx,
-    //     &record.id,
-    //     parsed_timestamp,
-    //     record.value,
-    //     &tag_normalized,
-    //     positive,
-    // ) {
-    //     Ok(_) => Ok(()),
-    //     Err(_) => Err(()),
-    // }
 }

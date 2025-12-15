@@ -12,8 +12,6 @@ mod core;
 
 fn main() {
     let mut cmd = String::new();
-    // let mut parsed_cmd: ParsedCommand;
-
     let args: Vec<String> = env::args().collect();
 
     if args.len() > 1 {
