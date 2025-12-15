@@ -73,8 +73,6 @@ cargo run --release
 
 ## 📊 Sample Metrics
 
-Typical performance on [Insert Your CPU Here]:
-
 ```
 ---------------------------------
 Processing Metrics:
