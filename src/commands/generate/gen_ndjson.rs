@@ -4,7 +4,7 @@ use std::{
     io::{BufWriter, Write},
 };
 
-use crate::models::Record;
+use crate::core::types::Record;
 
 pub fn write_ndjson(records: &[Record], path: &str) -> Result<(), Box<dyn Error>> {
     println!("Writing NDJSON to {}...", path);

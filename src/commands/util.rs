@@ -2,15 +2,15 @@ use std::{fs, path::Path};
 
 use colored::Colorize;
 
-use crate::models::{Command, HelpInfo};
+use crate::core::types::{Command, HelpInfo};
 
 pub struct ExitCommand;
 impl Command for ExitCommand {
-    fn execute(&self, args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
+    fn execute(&self, _args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         Ok(())
     }
 
-    fn info(&self) -> crate::models::HelpInfo {
+    fn info(&self) -> HelpInfo {
         HelpInfo {
             label: "exit",
             aliases: &["q", "quit"],
@@ -22,7 +22,7 @@ impl Command for ExitCommand {
 
 pub struct CleanCommand;
 impl Command for CleanCommand {
-    fn execute(&self, args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
+    fn execute(&self, _args: &[&str]) -> Result<(), Box<dyn std::error::Error>> {
         let output_dir = "./data";
         let db_file = "storage.db";
 
@@ -46,7 +46,7 @@ impl Command for CleanCommand {
         Ok(())
     }
 
-    fn info(&self) -> crate::models::HelpInfo {
+    fn info(&self) -> HelpInfo {
         HelpInfo {
             label: "clean",
             aliases: &["c", "cl"],
@@ -97,7 +97,7 @@ impl Command for HelpCommand {
         Ok(())
     }
 
-    fn info(&self) -> crate::models::HelpInfo {
+    fn info(&self) -> HelpInfo {
         HelpInfo {
             label: "help",
             aliases: &["h", "--help", "?"],

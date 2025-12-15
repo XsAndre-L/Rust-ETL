@@ -1,6 +1,5 @@
-use crate::models::Command;
+use crate::core::types::Command;
 
-pub mod clean;
 pub mod generate;
 pub mod transform;
 pub mod util;

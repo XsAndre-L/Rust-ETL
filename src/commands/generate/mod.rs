@@ -5,19 +5,27 @@ use std::{
 };
 
 use chrono::{Duration, Utc};
+use dotenvy::dotenv;
 use rand::Rng;
+use std::env;
 use uuid::Uuid;
 
 pub mod gen_csv;
 pub mod gen_ndjson;
 
-use crate::models::{Command, HelpInfo, Record};
+use crate::core::types::{Command, HelpInfo, Record};
 
 pub struct GenerateCommand;
 impl Command for GenerateCommand {
     fn execute(&self, args: &[&str]) -> Result<(), Box<dyn Error>> {
+        dotenv().ok();
+
         let format = args.get(0).copied().unwrap_or("csv");
-        let record_count = 100_000;
+        // let record_count = 100_000;
+        let record_count = env::var("RECORD_COUNT")
+            .unwrap_or_else(|_| "100000".to_string())
+            .parse()
+            .expect("RECORD_COUNT must be a valid number");
         let output_dir = "./data";
         let csv_path = format!("{}/input.csv", output_dir);
         let ndjson_path = format!("{}/input.ndjson", output_dir);

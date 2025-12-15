@@ -6,14 +6,13 @@ use std::{
 use crate::commands::{ParsedCommand, execute_command};
 
 mod commands;
-mod db;
-pub mod models;
+mod core;
 
 // use std::prelude::rust_2024;
 
 fn main() {
     let mut cmd = String::new();
-    let mut parsed_cmd: ParsedCommand;
+    // let mut parsed_cmd: ParsedCommand;
 
     let args: Vec<String> = env::args().collect();
 
@@ -23,9 +22,6 @@ fn main() {
         if let Some(mut parsed_cmd) = ParsedCommand::new(&cmd) {
             execute_command(&mut parsed_cmd);
         }
-        // parsed_cmd.label = args[0].clone();
-        // parsed_cmd.args = args[1..].to_vec();
-        // execute_command(&mut parsed_cmd);
     } else {
         // Interactive Mode: Executes untill "exit" is called
         loop {
@@ -42,11 +38,6 @@ fn main() {
                             break;
                         }
                     }
-                    // parsed_cmd = ParsedCommand::new(cmd);
-                    // let exit = execute_command(&mut cmd);
-                    // if exit {
-                    //     break;
-                    // }
                 }
                 Err(error) => println!("Error: {}", error),
             }

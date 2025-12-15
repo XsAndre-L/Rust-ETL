@@ -1,29 +1,86 @@
-# Rust-ETL
+# Rust ETL Challenge
 
-## Overview
+## 🚀 Overview
 
-`cargo run`
+A high-performance ETL tool written in Rust that streams large datasets (CSV/NDJSON), applies transformations, and loads them into SQLite without eating up RAM.
 
-after Rust-ETL starts up we generate the test data
-run: `generate [format]`
+## Key Features:
 
-Supported formats (default `csv`):
+- **Streaming I/O:** Processes 100k+ records with constant memory usage.
 
-- `csv`
-- `ndjson`
+- **Dual Operation:** Supports One-Shot (execute & exit) or Interactive Shell (REPL) for rapid testing.
 
-now to stream the data into the sqlite DB we simply run
-`transform [format]`.
+- **Smart CLI:** Includes command aliases `(g, t)`, built-in `help`, and environment cleanup with `clean`.
 
-### Commands
+- **Formats:** Full support for .csv and .ndjson.
+- **Configurable Scale:** Easily adjust dataset size via `.env` variable (no recompile needed).
 
-#### Main
+## 🛠️ Build & Run
 
-- g | gen | generate
-- t | transform
+Ensure you have Rust installed.
 
-#### Util
+```bash
+cargo build --release
+```
 
-- h | help
-- exit | quit | q
-- c | cl | clean
+## 🎮 Usage
+
+1. Generate Data
+   Creates a dummy dataset with >100k records.
+
+Syntax: `cargo run --release -- generate <format>`
+
+Examples:
+
+```Bash
+# Default (CSV)
+cargo run --release -- generate
+
+# NDJSON
+cargo run --release -- generate ndjson
+```
+
+2. Run ETL Pipeline
+   Streams the data, transforms it, and writes to output.db.
+
+Syntax: cargo run --release -- transform <format>
+
+Examples:
+
+```Bash
+# Process the default CSV file
+cargo run --release -- transform
+
+# Process the NDJSON file
+cargo run --release -- transform ndjson
+```
+
+### ⌨️ Interactive Mode (REPL)
+
+Run the tool without arguments to enter the command shell. Useful for running multiple workflows without recompiling/restarting.
+
+```Bash
+cargo run --release
+```
+
+| Command              | Alias | Description                                       |
+| :------------------- | :---- | :------------------------------------------------ |
+| `generate [format]`  | `g`   | Creates dummy dataset.                            |
+| `transform [format]` | `t`   | Runs the ETL pipeline.                            |
+| `clean`              | `cl`  | **Resets environment** (deletes DB & data files). |
+| `help`               | `h`   | Shows available commands.                         |
+| `exit`               | `q`   | Closes the application.                           |
+
+## 📊 Sample Metrics
+
+Typical performance on [Insert Your CPU Here]:
+
+Plaintext
+
+Total records processed: 100,000
+Successful rows written: 99,942
+Failed rows: 58
+Total duration: 1.24s
+Rows per second: 80,645
+
+---

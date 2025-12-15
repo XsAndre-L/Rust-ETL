@@ -1,6 +1,6 @@
 use std::{error::Error, fs::File, io::BufWriter};
 
-use crate::models::Record;
+use crate::core::types::Record;
 
 pub fn write_csv(records: &[Record], path: &str) -> Result<(), Box<dyn Error>> {
     println!("Writing CSV to {}...", path);
