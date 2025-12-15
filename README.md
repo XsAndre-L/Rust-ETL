@@ -75,12 +75,16 @@ cargo run --release
 
 Typical performance on [Insert Your CPU Here]:
 
-Plaintext
-
-Total records processed: 100,000
-Successful rows written: 99,942
-Failed rows: 58
-Total duration: 1.24s
-Rows per second: 80,645
+```
+---------------------------------
+Processing Metrics:
+---------------------------------
+Total records processed : 200000
+Successful rows written : 174843
+Failed rows (skipped)   : 25157
+Total duration          : 1.53s
+Throughput              : 114593 rows/sec
+---------------------------------
+```
 
 ---
